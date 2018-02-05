@@ -48,12 +48,11 @@ $(document).ready(function () {
         mainClass: 'my-mfp-zoom-in'
     });
 
-
     function second_passed() {
-        if (sessionStorage.getItem("bannerIsShowed") == null)
+        if (document.querySelector(".mfp-bg") == null && sessionStorage.getItem("bannerIsShowed") == null) {
             $('.banner_popup_btn').click();
-        sessionStorage.setItem("bannerIsShowed", true);
-
+            sessionStorage.setItem("bannerIsShowed", true);
+        }
     }
 
 
@@ -61,9 +60,8 @@ $(document).ready(function () {
         setTimeout(function () {
             second_passed();
         }, 15000);
-        var ts = Date.now();
         $("html").mouseout(function (e) {
-            if ((Date.now() - ts) <= 15000 && e.toElement == null) {
+            if (sessionStorage.getItem("bannerIsShowed") == null && e.toElement == null) {
                 second_passed();
             }
         });
@@ -110,7 +108,7 @@ $(document).ready(function () {
         }
     }
 
-    var basePrice = parseInt($(".price strong").text().replace(/\s/g, ''));
+    var basePrice = parseInt($($(".price strong")[0]).text().replace(/\s/g, ''));
     $('.plus').click(function (e) {
         e.preventDefault();
         var $this = $(this);

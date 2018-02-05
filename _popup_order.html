@@ -1,0 +1,50 @@
+<div id="popup_order" class="zoom-anim-dialog mfp-hide">
+    <h3>Оформление заказа</h3>
+    <div class="popup_order clearfix">
+        <form action="">
+            <div class="left">
+                <div class="tab" id="tab">
+                    <div id="tab_navbar">
+                        <a href="javascript:void(0);" id="tab1" class="tab_btn active">Физ. лицо</a>
+                        <a href="javascript:void(0);" id="tab2" class="tab_btn">ООО, ИП</a>
+                    </div>
+                    <div id="con_tab1" class="tab_blocks active">
+                        <input type="text" placeholder="Имя">
+                        <input type="text" placeholder="Фамилия">
+                        <input type="text" placeholder="Город">
+                        <input type="text" placeholder="Адрес">
+                        <input type="text" name="phone" placeholder="+7 (___) ___-__-__">
+                        <input type="text" placeholder="E-mail">
+                    </div>
+                    <div id="con_tab2" class="tab_blocks">
+                        <input type="text" placeholder="Название компании">
+                        <input type="text" placeholder="Город">
+                        <input type="text" placeholder="Адрес">
+                        <input type="text" name="phone" placeholder="+7 (___) ___-__-__">
+                        <input type="text" placeholder="E-mail">
+                    </div>
+                </div>
+            </div>
+            <div class="right">
+                <img src="/images/pic.png" alt="">
+                <div class="price_block clearfix">
+                    <div class="count">
+                        <a href="#" class="plus">
+                            <img src="/images/arr_up.png" alt="">
+                        </a>
+                        <input type="text" class="count_input" value="1" maxlength="3" disabled>
+                        <a href="#" class="minus">
+                            <img src="/images/arr_down.png" alt="">
+                        </a>
+                    </div>
+                    <div class="price clearfix">
+                        <strong data-global-container="drive-price"></strong>
+                        <span>₽</span>
+                    </div>
+                </div>
+                <input type="submit" value="Оформить">
+            </div>
+        </form>
+    </div>
+    <a href="#" class="politika_btn">Политика конфиденциальности</a>
+</div>
