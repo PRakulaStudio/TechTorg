@@ -1,5 +1,21 @@
 $(document).ready(function () {
 
+    var ss = document.createElement("link");
+    ss.type = "text/css";
+    ss.rel = "stylesheet";
+    ss.href = "https://cdn.jsdelivr.net/npm/suggestions-jquery@17.12.0/dist/css/suggestions.min.css";
+    document.getElementsByTagName("head")[0].appendChild(ss);
+
+    $("#con_tab2 input.order-name").suggestions({
+        token: "43db7e0fd7df33eb2e2ac018410d3f1381382f05",
+        type: "PARTY",
+        count: 5,
+        /* Вызывается, когда пользователь выбирает одну из подсказок */
+        onSelect: function(suggestion) {
+            window.suggest = suggestion;
+        }
+    });
+
     $('.orden_btn').magnificPopup({
         type: 'inline',
 
@@ -31,6 +47,8 @@ $(document).ready(function () {
         removalDelay: 300,
         mainClass: 'my-mfp-zoom-in'
     });
+
+
 
     $('.more_btn').magnificPopup({
         type: 'inline',
@@ -97,7 +115,8 @@ $(document).ready(function () {
     /*Tab*/
     $('#tab .tab_btn').click(function () {
         var tab_id = $(this).attr('id');
-        tabClick(tab_id)
+        tabClick(tab_id);
+
     });
 
     function tabClick(tab_id) {
@@ -135,9 +154,13 @@ $(document).ready(function () {
         $(".price strong").text((basePrice * $num).toLocaleString());
     });
 
-    $("#popup_order form").submit(function (e) {
+
+
+
+    $("body").on('submit', '#popup_order form', function (e) {
         e.preventDefault();
         var o = {};
+        var ajaxFunction = null;
         o.count = $(this).find(".count_input").val();
         o.total_price = $(this).find(".price strong").text();
         var tabPhys = $(this).find("#con_tab1.active");
@@ -150,6 +173,25 @@ $(document).ready(function () {
             o.address = $(".order-address", tabPhys).val();
             o.phone = $(".order-phone", tabPhys).val();
             o.email = $(".order-email", tabPhys).val();
+            o.total_price = parseInt(o.total_price.replace(/\s/g, ''));
+            ajaxFunction = function(o){
+                $.ajax({
+                    url: '/system/plugins/SecArgonia/feedback/individual/createPayment',
+                    dataType: "json",
+                    data: o,
+                    success: function (data) {
+                        if(!data.status || !data.data || !data.data.id) {
+                            alert(data.statusText);
+                            return false;
+                        }
+
+                        window.location = 'http://замена-фн.рф/payment.php?id=' + data.data.id;
+                        $.magnificPopup.close();
+
+                    }
+                });
+            };
+
         }
         else if (tabEntity[0] !== undefined) {
             o.type = 2;
@@ -158,22 +200,32 @@ $(document).ready(function () {
             o.address = $(".order-address", tabEntity).val();
             o.phone = $(".order-phone", tabEntity).val();
             o.email = $(".order-email", tabEntity).val();
-        }
-        var ok = true;
-        for (var key in o) if (o[key] === "") ok = false;
-        if (ok) {
-            $.ajax({
-                url: '/system/plugins/SecArgonia/feedback/order/create',
-                dataType: "json",
-                data: o,
-                success: function (data) {
-                    if (data.status) {
+            if(window.suggest)
+                o.company = JSON.stringify(window.suggest);
+            ajaxFunction = function(o){
+                $.ajax({
+                    url: '/system/plugins/SecArgonia/feedback/legal/createPayment',
+                    dataType: "json",
+                    data: o,
+                    success: function (data) {
+                        if(!data.status || !data.data || !data.data.id) {
+                            alert(data.statusText);
+                            return false;
+                        }
+
+                        window.location = 'http://замена-фн.рф/system/plugins/SecArgonia/feedback/plugin/xls/order'+data.data.id+'.xlsx';
                         alert("Мы приняли Ваш заказ и в ближайшее время с Вами свяжемся");
                         $.magnificPopup.close();
                     }
-                    else alert(data.statusText);
-                }
-            });
+
+                });
+            };
+        }
+
+        var ok = true;
+        for (var key in o) if (o[key] === "") ok = false;
+        if (ok) {
+            ajaxFunction(o);
         }
         else {
             alert("Не все поля заполнены");
@@ -283,4 +335,6 @@ $(document).ready(function () {
         removalDelay: 300,
         mainClass: 'my-mfp-zoom-in'
     });
+
+
 });
